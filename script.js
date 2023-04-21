@@ -1,59 +1,64 @@
-var form = document.getElementById('my-form');
-var msg = document.querySelector('.msg');
-var items = document.querySelector('.items');
+var form = document.getElementById("my-form");
+var msg = document.querySelector(".msg");
+var items = document.querySelector(".items");
 
-form.addEventListener('submit', savetoLocalStorage);
+form.addEventListener("submit", savetoLocalStorage);
 
 function savetoLocalStorage(e) {
   e.preventDefault();
 
-  var name = document.getElementById('name').value;
-  var email = document.getElementById('email').value;
+  var name = document.getElementById("name").value;
+  var email = document.getElementById("email").value;
 
   let person = { name, email };
 
-  if (name === '' || email === '') {
-    msg.classList.add('error');
-    msg.innerHTML = 'Please enter all fields';
+  if (name === "" || email === "") {
+    msg.classList.add("error");
+    msg.innerHTML = "Please enter all fields";
     setTimeout(() => msg.remove(), 3000);
   } else {
     localStorage.setItem(email, JSON.stringify(person));
-    addToList(email);
+    addToList(person);
     form.reset();
-    msg.classList.add('success');
-    msg.innerHTML = 'Successfully saved your information';
+    msg.classList.add("success");
+    msg.innerHTML = "Successfully saved your information";
     setTimeout(() => msg.remove(), 3000);
   }
 }
 
-function addToList(email) {
-  var per = JSON.parse(localStorage.getItem(email));
+function addToList(person) {
+  // creating new li element
+  var li = document.createElement("li");
+  li.className = "item";
+  li.appendChild(document.createTextNode(person.name + " - " + person.email));
 
-  // creating list item
-  var li = document.createElement('li');
-  var btn = document.createElement('button');
+  var deleteBtn = document.createElement("button");
+  deleteBtn.setAttribute("type", "button");
+  deleteBtn.id = "delete";
+  deleteBtn.className = "delete";
+  deleteBtn.setAttribute("style", "float:right");
+  deleteBtn.appendChild(document.createTextNode("Delete"));
 
-  li.className = 'item';
-  btn.setAttribute('type', 'button');
-  btn.id = 'delete';
-  btn.className = 'delete';
-  btn.setAttribute('style', 'float:right');
-  btn.appendChild(document.createTextNode('Delete'));
-  li.appendChild(document.createTextNode(per.name + ' - ' + per.email));
-  li.appendChild(btn);
-  items.appendChild(li);
-}
-
-items.addEventListener('click', deleteElement);
-
-function deleteElement(e) {
-  if (e.target.classList.contains('delete')) {
-    var text = e.target.parentElement.textContent.replace('Delete', '');
-    // console.log(text);
-    var key = text.split(' ')[2];
-    // console.log(key);
-    localStorage.removeItem(key);
-    var li = e.target.parentElement;
+  deleteBtn.onclick = () => {
+    localStorage.removeItem(person.email);
     items.removeChild(li);
-  }
+  };
+
+  var editBtn = document.createElement("button");
+  editBtn.setAttribute("type", "button");
+  editBtn.id = "edit";
+  editBtn.className = "edit";
+  editBtn.setAttribute("style", "float:right");
+  editBtn.appendChild(document.createTextNode("Edit"));
+
+  editBtn.onclick = () => {
+    document.getElementById("name").value = person.name;
+    document.getElementById("email").value = person.email;
+    localStorage.removeItem(person.email);
+    items.removeChild(li);
+  };
+
+  li.appendChild(editBtn);
+  li.appendChild(deleteBtn);
+  items.appendChild(li);
 }
