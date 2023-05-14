@@ -59,7 +59,7 @@ function addToList(person) {
   deleteBtn.appendChild(document.createTextNode('Delete'));
 
   deleteBtn.onclick = () => {
-    localStorage.removeItem(person.email);
+    // localStorage.removeItem(person.email);
     items.removeChild(li);
   };
 
@@ -73,7 +73,7 @@ function addToList(person) {
   editBtn.onclick = () => {
     document.getElementById('name').value = person.name;
     document.getElementById('email').value = person.email;
-    localStorage.removeItem(person.email);
+    // localStorage.removeItem(person.email);
     items.removeChild(li);
   };
 
@@ -81,3 +81,15 @@ function addToList(person) {
   li.appendChild(deleteBtn);
   items.appendChild(li);
 }
+
+const axiosInstance = axios.create({
+  baseURL: 'https://crudcrud.com/api/eef689936b60456aa3d7677a3dc2f2fd',
+});
+
+axiosInstance
+  .get('/appointmnetData')
+  .then((res) => {
+    console.log(res);
+    res.data.forEach((data) => addToList(data));
+  })
+  .catch((err) => console.log(err));
