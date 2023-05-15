@@ -1,4 +1,4 @@
-var BASE_URL = 'https://crudcrud.com/api/e4fc702cd3bc49d7938041c219860ae1';
+const BASE_URL = 'https://crudcrud.com/api/e4fc702cd3bc49d7938041c219860ae1';
 
 var form = document.getElementById('my-form');
 var msg = document.querySelector('.msg');
@@ -105,8 +105,5 @@ axiosInstance
     res.data.forEach((data) => addToList(data));
   })
   .catch((err) => {
-    if (res.data.length < 1) {
-      console.log('Empty user list');
-    }
     console.log(err);
   });
