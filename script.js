@@ -1,3 +1,5 @@
+var BASE_URL = 'https://crudcrud.com/api/e4fc702cd3bc49d7938041c219860ae1';
+
 var form = document.getElementById('my-form');
 var msg = document.querySelector('.msg');
 var items = document.querySelector('.items');
@@ -22,10 +24,7 @@ function saveData(e) {
     // Network Calling using axios
 
     axios
-      .post(
-        'https://crudcrud.com/api/eef689936b60456aa3d7677a3dc2f2fd/appointmnetData',
-        person
-      )
+      .post(`${BASE_URL}/appointmnetData`, person)
       .then((res) => {
         console.log(res);
         addToList(res.data);
@@ -60,6 +59,12 @@ function addToList(person) {
 
   deleteBtn.onclick = () => {
     // localStorage.removeItem(person.email);
+
+    axios
+      .delete(`${BASE_URL}/appointmnetData/${person._id}`)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+
     items.removeChild(li);
   };
 
@@ -71,9 +76,16 @@ function addToList(person) {
   editBtn.appendChild(document.createTextNode('Edit'));
 
   editBtn.onclick = () => {
+    // localStorage.removeItem(person.email);
+
     document.getElementById('name').value = person.name;
     document.getElementById('email').value = person.email;
-    // localStorage.removeItem(person.email);
+
+    axios
+      .delete(`${BASE_URL}/appointmnetData/${person._id}`)
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
+
     items.removeChild(li);
   };
 
@@ -83,7 +95,7 @@ function addToList(person) {
 }
 
 const axiosInstance = axios.create({
-  baseURL: 'https://crudcrud.com/api/eef689936b60456aa3d7677a3dc2f2fd',
+  baseURL: BASE_URL,
 });
 
 axiosInstance
@@ -92,4 +104,9 @@ axiosInstance
     console.log(res);
     res.data.forEach((data) => addToList(data));
   })
-  .catch((err) => console.log(err));
+  .catch((err) => {
+    if (res.data.length < 1) {
+      console.log('Empty user list');
+    }
+    console.log(err);
+  });
